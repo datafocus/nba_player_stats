@@ -479,9 +479,7 @@
         }
 
         return true;
-      }
-
-      // Display the results based on the data received
+      } // Display the results based on the data received
       function displayResults(data) {
         const { stats, header } = data || {};
 
@@ -501,7 +499,12 @@
           tableHTML += "<tr>";
           // Populate the table cells
           row.forEach((cell) => {
-            tableHTML += `<td>${cell || ""}</td>`;
+            if (rowIndex === 0) {
+              // Check if it's the first row
+              tableHTML += `<td style="font-weight: bold;">${cell || ""}</td>`;
+            } else {
+              tableHTML += `<td>${cell || ""}</td>`;
+            }
           });
           tableHTML += "</tr>";
         });
