@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A tool to view recent NBA player stats."
+    />
+    <meta property="og:title" content="NBA Player Stats Tool" />
+    <meta
+      property="og:description"
+      content="A tool to view recent NBA player stats."
+    />
+    <meta
+      property="og:image"
+      content="https://www.wallpaperuse.com/wallp/45-456480_m.png"
+    />
+    <meta
+      property="og:url"
+      content="https://datafocus.github.io/nba_player_stats/"
+    />
+    <title>NBA Player Stats Tool</title>
+    <link rel="icon" href="favicon.png" type="image/x-png" />
+    <style>
+      .page-heading {
+        text-align: center;
+        font-size: 2em;
+        padding: 20px 0;
+        background-color: #007bff;
+        color: #ffffff;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        font-weight: bold;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #output h2 {
+        text-align: center;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        max-width: 600px;
+        width: 100%;
+        padding: 20px;
+        border: 1px solid #eaeaea;
+        border-radius: 8px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+      }
+
+      label > span {
+        margin-top: 10px;
+        display: block;
+      }
+
+      input[type="submit"] {
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+
+      small {
+        font-size: 0.8rem;
+        color: gray;
+      }
+
+      #output {
+        max-width: 95%;
+        overflow-x: auto;
+      }
+
+      @media (max-width: 480px) {
+        form {
+          gap: 10px;
+        }
+
+        label {
+          font-size: 0.9rem;
+        }
+      }
+
+      table {
+        border-collapse: collapse;
+      }
+
+      td,
+      th {
+        border: 1px solid black;
+        padding: 5px;
+        text-align: center;
+        vertical-align: middle;
+      }
+
+      .spinner-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+      }
+
+      .centered-spinner img {
+        max-width: 50px;
+        max-height: 50px;
+      }
+
+      .accordion-content {
+        display: none;
+      }
+
+      .accordion-button {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1 class="page-heading">🏀 NBA Player Stats Tool 🏀</h1>
+
+    <form id="statsForm">
+      <fieldset id="playerDetailsFieldset">
+        <legend>Player Details</legend>
+
+        <label>
+          Player Name:
+          <input
+            type="text"
+            name="playerName"
+            id="playerName"
+            placeholder="e.g. Nikola Jokic"
+            required
+            maxlength="60"
+          />
+        </label>
+
+        <label>
+          <span>Number of Points:</span>
+          <input
+            type="number"
+            name="numPts"
+            id="numPts"
+            step="1"
+            min="1"
+            max="99"
+            pattern="^[1-9][0-9]*$"
+          />
+          <small>
+            e.g. Type '10' for 10+ points, '20' for 20+ points etc. Max value:
+            99.
+          </small>
+        </label>
+
+        <label>
+          <span>Number of 3-Pointers:</span>
+          <select name="num3pt" id="num3pt">
+            <option value="" selected></option>
+            <option value="1">1+</option>
+            <option value="2">2+</option>
+            <option value="3">3+</option>
+            <option value="4">4+</option>
+            <option value="5">5+</option>
+            <option value="6">6+</option>
+            <option value="7">7+</option>
+            <option value="8">8+</option>
+            <option value="9">9+</option>
+            <option value="10">10+</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Number of Assists:</span>
+          <input
+            type="number"
+            name="numAss"
+            id="numAss"
+            step="1"
+            min="1"
+            max="99"
+            pattern="^[1-9][0-9]*$"
+          />
+          <small>
+            e.g. Type '4' for 4+ assists, '8' for 8+ assists etc. Max value: 99.
+          </small>
+        </label>
+
+        <label>
+          <span>Number of Rebounds:</span>
+          <input
+            type="number"
+            name="numReb"
+            id="numReb"
+            step="1"
+            min="1"
+            max="99"
+            pattern="^[1-9][0-9]*$"
+          />
+          <small>
+            e.g. Type '4' for 4+ rebounds, '8' for 8+ rebounds etc. Max value:
+            99.
+          </small>
+        </label>
+      </fieldset>
+
+      <div class="accordion">
+        <button type="button" class="accordion-button">
+          Additional Options
+        </button>
+
+        <fieldset class="accordion-content">
+          <legend style="margin-top: 10px">Game Details</legend>
+
+          <label>
+            Last N Games:
+            <input
+              type="text"
+              name="lastNGames"
+              id="lastNGames"
+              pattern="All|^[1-9][0-9]{0,1}$"
+              value="All"
+              required
+            />
+            <small
+              >Type 'All' to include all recent games played by the
+              basketballer. Or type a number to only include the specified
+              number of games (e.g. '10' for the last 10 games). Max numeric
+              value: 99.</small
+            >
+          </label>
+
+          <label>
+            <span>Home/Away:</span>
+            <select name="homeAway" id="homeAway">
+              <option value="Any" selected>Any</option>
+              <option value="Home">Home</option>
+              <option value="Away">Away</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Win/Loss:</span>
+            <select name="winLoss" id="winLoss">
+              <option value="Any" selected>Any</option>
+              <option value="Win">Win</option>
+              <option value="Loss">Loss</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Opponent Team:</span>
+            <select name="opponentTeam" id="opponentTeam">
+              <option value="All" selected>All</option>
+              <option value="76ers">76ers</option>
+              <option value="Bucks">Bucks</option>
+              <option value="Bulls">Bulls</option>
+              <option value="Cavaliers">Cavaliers</option>
+              <option value="Celtics">Celtics</option>
+              <option value="Clippers">Clippers</option>
+              <option value="Grizzlies">Grizzlies</option>
+              <option value="Hawks">Hawks</option>
+              <option value="Heat">Heat</option>
+              <option value="Hornets">Hornets</option>
+              <option value="Jazz">Jazz</option>
+              <option value="Kings">Kings</option>
+              <option value="Knicks">Knicks</option>
+              <option value="Lakers">Lakers</option>
+              <option value="Magic">Magic</option>
+              <option value="Mavericks">Mavericks</option>
+              <option value="Nets">Nets</option>
+              <option value="Nuggets">Nuggets</option>
+              <option value="Pacers">Pacers</option>
+              <option value="Pelicans">Pelicans</option>
+              <option value="Pistons">Pistons</option>
+              <option value="Raptors">Raptors</option>
+              <option value="Rockets">Rockets</option>
+              <option value="Spurs">Spurs</option>
+              <option value="Suns">Suns</option>
+              <option value="Thunder">Thunder</option>
+              <option value="Timberwolves">Timberwolves</option>
+              <option value="Trail Blazers">Trail Blazers</option>
+              <option value="Warriors">Warriors</option>
+              <option value="Wizards">Wizards</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Game Type:</span>
+            <select name="gameType" id="gameType">
+              <option value="Regular Season" selected>Regular Season</option>
+              <option value="Non-Regular Season">Non-Regular Season</option>
+              <option value="All">All Game Types</option>
+            </select>
+            <small>
+              Select 'Regular Season' to only count the player's regular season
+              games. Select 'Non-Regular Season' to only count games played
+              outside the regular season. Select 'All' to count all types of
+              games.
+            </small>
+          </label>
+
+          <label>
+            <span>Current Team Only:</span>
+            <select name="mostRecentTeam" id="mostRecentTeam">
+              <option value="Yes" selected>Yes</option>
+              <option value="No">No</option>
+            </select>
+            <small
+              >Select 'yes' to count games for the player's current team only.
+              Select 'no' to count games for their current and previous
+              teams.</small
+            >
+          </label>
+        </fieldset>
+      </div>
+
+      <input type="hidden" name="action" value="processStats" />
+      <input type="submit" value="Submit" />
+
+      <div class="spinner-container">
+        <div id="spinner" class="centered-spinner" style="display: none">
+          <img src="https://i.gifer.com/VAyR.gif" alt="Loading..." />
+        </div>
+      </div>
+    </form>
+
+    <div id="output"></div>
+
+    <script>
+      // Attach blur event listeners to each input field inside the "playerDetailsFieldset" for validation purposes
+      document
+        .querySelectorAll("#playerDetailsFieldset input")
+        .forEach((inputField) => {
+          inputField.addEventListener("blur", function () {
+            // Trim any whitespace from the input value
+            this.value = this.value.trim();
+
+            // If the input is of type "number" and is invalid, display an error
+            if (this.type === "number" && !this.validity.valid) {
+              this.setCustomValidity("Invalid input");
+              this.reportValidity();
+              this.setCustomValidity(""); // Reset custom validity after reporting
+            }
+          });
+        });
+
+      // Attach an event listener to the "statsForm" to handle form submissions
+      document.querySelector("#statsForm").addEventListener("submit", (e) => {
+        e.preventDefault(); // Prevent default form submission
+
+        // If the user input is valid
+        if (validateUserInput()) {
+          // Display a spinner while processing the request
+          document.getElementById("spinner").style.display = "block";
+
+          // Convert the form data to a URLSearchParams string for sending via GET request
+          const params = new URLSearchParams(new FormData(e.target)).toString();
+
+          // Send a GET request to the specified Google Apps Script URL with the form data
+          fetch(
+            `https://script.google.com/macros/s/AKfycbyvBp9IGA7kRn7HsGdaZkXEnOS58eU6AIbB05eJB4B_HW5R0nqOyZSwABzq9Wxn7pHtLw/exec?${params}`,
+            {
+              method: "GET",
+              mode: "cors",
+            },
+          )
+            .then((response) => response.json()) // Parse the JSON response
+            .then((data) => {
+              // Log the received data
+              console.log(
+                "Received data from Google Apps Script:",
+                JSON.stringify(data, null, 2),
+              );
+              // Display the results based on the data received
+              displayResults(data);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              // Hide the spinner if there's an error
+              document.getElementById("spinner").style.display = "none";
+            });
+        }
+      });
+
+      // Toggle accordion display on click
+      const acc = document.querySelector(".accordion-button");
+      const panel = document.querySelector(".accordion-content");
+
+      acc.addEventListener("click", () => {
+        // Toggle the display of the panel
+        panel.style.display =
+          panel.style.display === "block" ? "none" : "block";
+      });
+
+      // Validate the user input before submission
+      function validateUserInput() {
+        const fieldDisplayNames = {
+          numPts: "Number of points",
+          num3pt: "Number of 3-pointers",
+          numAss: "Number of assists",
+          numReb: "Number of rebounds",
+          lastNGames: "Last N games",
+        };
+
+        let atLeastOneFieldFilled = false;
+
+        // Loop through each field and validate its input
+        for (const fieldName in fieldDisplayNames) {
+          const inputValue = document.querySelector(
+            `[name="${fieldName}"]`,
+          ).value;
+
+          if (inputValue) {
+            atLeastOneFieldFilled = true;
+
+            // Check if the input value is a positive integer (excluding lastNGames)
+            if (
+              fieldName !== "lastNGames" &&
+              !/^[1-9][0-9]*$/.test(inputValue)
+            ) {
+              alert(
+                `Error: ${fieldDisplayNames[fieldName]} must be a whole number above 0.`,
+              );
+              return false;
+            }
+
+            // Additional validation for lastNGames
+            if (
+              fieldName === "lastNGames" &&
+              inputValue.toLowerCase() !== "all" &&
+              (!/^[1-9][0-9]{0,1}$/.test(inputValue) ||
+                parseInt(inputValue) > 99)
+            ) {
+              alert(
+                `Error: ${fieldDisplayNames[fieldName]} must be a whole number between 1 and 99 or 'All'.`,
+              );
+              return false;
+            }
+          }
+        }
+
+        // Display an error if no statistical fields (points, 3-pointers, assists, rebounds) are filled
+        if (!atLeastOneFieldFilled) {
+          alert(
+            "Please specify at least one of the following: number of points, number of 3-pointers, number of assists, or number of rebounds.",
+          );
+          return false;
+        }
+
+        return true;
+      }
+
+      // Display the results based on the data received
+      function displayResults(data) {
+        const { stats, header } = data || {};
+
+        // Check for valid data format
+        if (!stats) {
+          console.error("Unexpected data format:", data);
+          return;
+        }
+
+        // Build the results table as an HTML string
+        let tableHTML = `<h2>${
+          header || "N/A"
+        }</h2><table class="responsive-table" border="1" cellspacing="0" cellpadding="5" style="width:auto;">`;
+
+        // Populate the table rows
+        stats.forEach((row, rowIndex) => {
+          tableHTML += "<tr>";
+          // Populate the table cells
+          row.forEach((cell) => {
+            tableHTML += `<td>${cell || ""}</td>`;
+          });
+          tableHTML += "</tr>";
+        });
+
+        tableHTML += "</table>";
+        const outputDiv = document.getElementById("output");
+        outputDiv.innerHTML = tableHTML;
+
+        // Adjust table cell dimensions for consistency
+        const table = outputDiv.querySelector(".responsive-table");
+        const rows = table.querySelectorAll("tr");
+        let maxWidth = 0,
+          maxHeight = 0;
+
+        // Determine max width and height
+        rows.forEach((row) => {
+          const cells = row.querySelectorAll("td");
+          cells.forEach((cell) => {
+            if (cell.offsetWidth > maxWidth) maxWidth = cell.offsetWidth;
+            if (cell.offsetHeight > maxHeight) maxHeight = cell.offsetHeight;
+          });
+        });
+
+        // Apply max width and height to all cells
+        rows.forEach((row) => {
+          const cells = row.querySelectorAll("td");
+          cells.forEach((cell) => {
+            cell.style.width = `${maxWidth}px`;
+            cell.style.height = `${maxHeight}px`;
+          });
+        });
+
+        // Hide the spinner after results are displayed
+        document.getElementById("spinner").style.display = "none";
+        // Smoothly scroll to the results
+        outputDiv.scrollIntoView({ behavior: "smooth" });
+      }
+    </script>
+  </body>
+</html>
