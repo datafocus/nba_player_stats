@@ -358,129 +358,130 @@
     <div id="output"></div>
 
     <script>
-            // Attach blur event listeners to each input field inside the "playerDetailsFieldset" for validation purposes
-            document
-              .querySelectorAll("#playerDetailsFieldset input")
-              .forEach((inputField) => {
-                inputField.addEventListener("blur", function () {
-                  // Trim any whitespace from the input value
-                  this.value = this.value.trim();
+      // Attach blur event listeners to each input field inside the "playerDetailsFieldset" for validation purposes
+      document
+        .querySelectorAll("#playerDetailsFieldset input")
+        .forEach((inputField) => {
+          inputField.addEventListener("blur", function () {
+            // Trim any whitespace from the input value
+            this.value = this.value.trim();
 
-                  // If the input is of type "number" and is invalid, display an error
-                  if (this.type === "number" && !this.validity.valid) {
-                    this.setCustomValidity("Invalid input");
-                    this.reportValidity();
-                    this.setCustomValidity(""); // Reset custom validity after reporting
-                  }
-                });
-              });
+            // If the input is of type "number" and is invalid, display an error
+            if (this.type === "number" && !this.validity.valid) {
+              this.setCustomValidity("Invalid input");
+              this.reportValidity();
+              this.setCustomValidity(""); // Reset custom validity after reporting
+            }
+          });
+        });
 
-            // Attach an event listener to the "statsForm" to handle form submissions
-            document.querySelector("#statsForm").addEventListener("submit", (e) => {
-              e.preventDefault(); // Prevent default form submission
+      // Attach an event listener to the "statsForm" to handle form submissions
+      document.querySelector("#statsForm").addEventListener("submit", (e) => {
+        e.preventDefault(); // Prevent default form submission
 
-              // If the user input is valid
-              if (validateUserInput()) {
-                // Display a spinner while processing the request
-                document.getElementById("spinner").style.display = "block";
+        // If the user input is valid
+        if (validateUserInput()) {
+          // Display a spinner while processing the request
+          document.getElementById("spinner").style.display = "block";
 
-                // Convert the form data to a URLSearchParams string for sending via GET request
-                const params = new URLSearchParams(new FormData(e.target)).toString();
+          // Convert the form data to a URLSearchParams string for sending via GET request
+          const params = new URLSearchParams(new FormData(e.target)).toString();
 
-                // Send a GET request to the specified Google Apps Script URL with the form data
-                fetch(
-                  `https://script.google.com/macros/s/AKfycby-OsSi1T71upyjfW_Zu_yf40nZz79eJnAXClqo01NbSdX63qqaP6fFqkYEkkfGzNSDpQ/exec?${params}`,
-                  {
-                    method: "GET",
-                    mode: "cors",
-                  },
-                )
-                  .then((response) => response.json()) // Parse the JSON response
-                  .then((data) => {
-                    // Log the received data
-                    console.log(
-                      "Received data from Google Apps Script:",
-                      JSON.stringify(data, null, 2),
-                    );
-                    // Display the results based on the data received
-                    displayResults(data);
-                  })
-                  .catch((error) => {
-                    console.error("Error:", error);
-                    // Hide the spinner if there's an error
-                    document.getElementById("spinner").style.display = "none";
-                  });
-              }
-            });
-
-            // Toggle accordion display on click
-            const acc = document.querySelector(".accordion-button");
-            const panel = document.querySelector(".accordion-content");
-
-            acc.addEventListener("click", () => {
-              // Toggle the display of the panel
-              panel.style.display =
-                panel.style.display === "block" ? "none" : "block";
-            });
-
-            // Validate the user input before submission
-            function validateUserInput() {
-              const fieldDisplayNames = {
-                numPts: "Number of points",
-                num3pt: "Number of 3-pointers",
-                numAss: "Number of assists",
-                numReb: "Number of rebounds",
-                lastNGames: "Last N games",
-              };
-
-              let atLeastOneFieldFilled = false;
-
-              // Loop through each field and validate its input
-              for (const fieldName in fieldDisplayNames) {
-                const inputValue = document.querySelector(
-                  `[name="${fieldName}"]`,
-                ).value;
-
-                if (inputValue) {
-                  atLeastOneFieldFilled = true;
-
-                  // Check if the input value is a positive integer (excluding lastNGames)
-                  if (
-                    fieldName !== "lastNGames" &&
-                    !/^[1-9][0-9]*$/.test(inputValue)
-                  ) {
-                    alert(
-                      `Error: ${fieldDisplayNames[fieldName]} must be a whole number above 0.`,
-                    );
-                    return false;
-                  }
-
-                  // Additional validation for lastNGames
-                  if (
-                    fieldName === "lastNGames" &&
-                    inputValue.toLowerCase() !== "all" &&
-                    (!/^[1-9][0-9]{0,1}$/.test(inputValue) ||
-                      parseInt(inputValue) > 99)
-                  ) {
-                    alert(
-                      `Error: ${fieldDisplayNames[fieldName]} must be a whole number between 1 and 99 or 'All'.`,
-                    );
-                    return false;
-                  }
-                }
-              }
-
-              // Display an error if no statistical fields (points, 3-pointers, assists, rebounds) are filled
-              if (!atLeastOneFieldFilled) {
-                alert(
-                  "Please specify at least one of the following: number of points, number of 3-pointers, number of assists, or number of rebounds.",
-                );
-                return false;
-              }
-
-              return true;
-
+          // Send a GET request to the specified Google Apps Script URL with the form data
+          fetch(
+            `https://script.google.com/macros/s/AKfycby-OsSi1T71upyjfW_Zu_yf40nZz79eJnAXClqo01NbSdX63qqaP6fFqkYEkkfGzNSDpQ/exec?${params}`,
+            {
+              method: "GET",
+              mode: "cors",
+            },
+          )
+            .then((response) => response.json()) // Parse the JSON response
+            .then((data) => {
+              // Log the received data
+              console.log(
+                "Received data from Google Apps Script:",
+                JSON.stringify(data, null, 2),
+              );
               // Display the results based on the data received
+              displayResults(data);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              // Hide the spinner if there's an error
+              document.getElementById("spinner").style.display = "none";
+            });
+        }
+      });
+
+      // Toggle accordion display on click
+      const acc = document.querySelector(".accordion-button");
+      const panel = document.querySelector(".accordion-content");
+
+      acc.addEventListener("click", () => {
+        // Toggle the display of the panel
+        panel.style.display =
+          panel.style.display === "block" ? "none" : "block";
+      });
+
+      // Validate the user input before submission
+      function validateUserInput() {
+        const fieldDisplayNames = {
+          numPts: "Number of points",
+          num3pt: "Number of 3-pointers",
+          numAss: "Number of assists",
+          numReb: "Number of rebounds",
+          lastNGames: "Last N games",
+        };
+
+        let atLeastOneFieldFilled = false;
+
+        // Loop through each field and validate its input
+        for (const fieldName in fieldDisplayNames) {
+          const inputValue = document.querySelector(
+            `[name="${fieldName}"]`,
+          ).value;
+
+          if (inputValue) {
+            atLeastOneFieldFilled = true;
+
+            // Check if the input value is a positive integer (excluding lastNGames)
+            if (
+              fieldName !== "lastNGames" &&
+              !/^[1-9][0-9]*$/.test(inputValue)
+            ) {
+              alert(
+                `Error: ${fieldDisplayNames[fieldName]} must be a whole number above 0.`,
+              );
+              return false;
+            }
+
+            // Additional validation for lastNGames
+            if (
+              fieldName === "lastNGames" &&
+              inputValue.toLowerCase() !== "all" &&
+              (!/^[1-9][0-9]{0,1}$/.test(inputValue) ||
+                parseInt(inputValue) > 99)
+            ) {
+              alert(
+                `Error: ${fieldDisplayNames[fieldName]} must be a whole number between 1 and 99 or 'All'.`,
+              );
+              return false;
+            }
+          }
+        }
+
+        // Display an error if no statistical fields (points, 3-pointers, assists, rebounds) are filled
+        if (!atLeastOneFieldFilled) {
+          alert(
+            "Please specify at least one of the following: number of points, number of 3-pointers, number of assists, or number of rebounds.",
+          );
+          return false;
+        }
+
+        return true;
+      }
+
+      // Display the results based on the data received
       function displayResults(data) {
         const { stats, header } = data || {};
 
