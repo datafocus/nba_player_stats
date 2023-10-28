@@ -3,23 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="A tool to view recent NBA player stats."
-    />
+    <meta name="description" content="A tool to view recent NBA player stats." />
     <meta property="og:title" content="NBA Player Stats Tool" />
-    <meta
-      property="og:description"
-      content="A tool to view recent NBA player stats."
-    />
+    <meta property="og:description" content="A tool to view recent NBA player stats." />
     <meta
       property="og:image"
       content="https://www.wallpaperuse.com/wallp/45-456480_m.png"
     />
-    <meta
-      property="og:url"
-      content="https://datafocus.github.io/nba_player_stats/"
-    />
+    <meta property="og:url" content="https://datafocus.github.io/nba_player_stats/" />
     <title>NBA Player Stats Tool</title>
     <link rel="icon" href="favicon.png" type="image/x-png" />
     <style>
@@ -177,9 +168,7 @@
             max="99"
             pattern="^[1-9][0-9]*$"
           />
-          <small>
-            e.g. Type '10' for 10+ points, '20' for 20+ points etc.
-          </small>
+          <small> e.g. Type '10' for 10+ points, '20' for 20+ points etc. </small>
         </label>
 
         <label>
@@ -210,9 +199,7 @@
             max="99"
             pattern="^[1-9][0-9]*$"
           />
-          <small>
-            e.g. Type '4' for 4+ assists, '8' for 8+ assists etc.
-          </small>
+          <small> e.g. Type '4' for 4+ assists, '8' for 8+ assists etc. </small>
         </label>
 
         <label>
@@ -226,16 +213,12 @@
             max="99"
             pattern="^[1-9][0-9]*$"
           />
-          <small>
-            e.g. Type '4' for 4+ rebounds, '8' for 8+ rebounds etc.
-          </small>
+          <small> e.g. Type '4' for 4+ rebounds, '8' for 8+ rebounds etc. </small>
         </label>
       </fieldset>
 
       <div class="accordion">
-        <button type="button" class="accordion-button">
-          Additional Options
-        </button>
+        <button type="button" class="accordion-button">Additional Options</button>
 
         <fieldset class="accordion-content">
           <legend style="margin-top: 10px">Game Details</legend>
@@ -251,9 +234,9 @@
               required
             />
             <small
-              >Type 'All' to include all recent games played by the
-              basketballer. Or type a number to only include the specified
-              number of games (e.g. '10' for the last 10 games).</small
+              >Type 'All' to include all recent games played by the basketballer. Or type
+              a number to only include the specified number of games (e.g. '10' for the
+              last 10 games).</small
             >
           </label>
 
@@ -320,10 +303,9 @@
               <option value="All">All Game Types</option>
             </select>
             <small>
-              Select 'Regular Season' to only count the player's regular season
-              games. Select 'Non-Regular Season' to only count games played
-              outside the regular season. Select 'All' to count all types of
-              games.
+              Select 'Regular Season' to only count the player's regular season games.
+              Select 'Non-Regular Season' to only count games played outside the regular
+              season. Select 'All' to count all types of games.
             </small>
           </label>
 
@@ -334,9 +316,8 @@
               <option value="No">No</option>
             </select>
             <small
-              >Select 'yes' to count games for the player's current team only.
-              Select 'no' to count games for their current and previous
-              teams.</small
+              >Select 'yes' to count games for the player's current team only. Select 'no'
+              to count games for their current and previous teams.</small
             >
           </label>
         </fieldset>
@@ -356,21 +337,19 @@
 
     <script>
       // Attach blur event listeners to each input field inside the "playerDetailsFieldset" for validation purposes
-      document
-        .querySelectorAll("#playerDetailsFieldset input")
-        .forEach((inputField) => {
-          inputField.addEventListener("blur", function () {
-            // Trim any whitespace from the input value
-            this.value = this.value.trim();
+      document.querySelectorAll("#playerDetailsFieldset input").forEach((inputField) => {
+        inputField.addEventListener("blur", function () {
+          // Trim any whitespace from the input value
+          this.value = this.value.trim();
 
-            // If the input is of type "number" and is invalid, display an error
-            if (this.type === "number" && !this.validity.valid) {
-              this.setCustomValidity("Invalid input");
-              this.reportValidity();
-              this.setCustomValidity(""); // Reset custom validity after reporting
-            }
-          });
+          // If the input is of type "number" and is invalid, display an error
+          if (this.type === "number" && !this.validity.valid) {
+            this.setCustomValidity("Invalid input");
+            this.reportValidity();
+            this.setCustomValidity(""); // Reset custom validity after reporting
+          }
         });
+      });
 
       // Attach an event listener to the "statsForm" to handle form submissions
       document.querySelector("#statsForm").addEventListener("submit", (e) => {
@@ -416,8 +395,7 @@
 
       acc.addEventListener("click", () => {
         // Toggle the display of the panel
-        panel.style.display =
-          panel.style.display === "block" ? "none" : "block";
+        panel.style.display = panel.style.display === "block" ? "none" : "block";
       });
 
       // Validate the user input before submission
@@ -434,18 +412,13 @@
 
         // Loop through each field and validate its input
         for (const fieldName in fieldDisplayNames) {
-          const inputValue = document.querySelector(
-            `[name="${fieldName}"]`,
-          ).value;
+          const inputValue = document.querySelector(`[name="${fieldName}"]`).value;
 
           if (inputValue) {
             atLeastOneFieldFilled = true;
 
             // Check if the input value is a positive integer (excluding lastNGames)
-            if (
-              fieldName !== "lastNGames" &&
-              !/^[1-9][0-9]*$/.test(inputValue)
-            ) {
+            if (fieldName !== "lastNGames" && !/^[1-9][0-9]*$/.test(inputValue)) {
               alert(
                 `Error: ${fieldDisplayNames[fieldName]} must be a whole number above 0.`,
               );
@@ -456,8 +429,7 @@
             if (
               fieldName === "lastNGames" &&
               inputValue.toLowerCase() !== "all" &&
-              (!/^[1-9][0-9]{0,1}$/.test(inputValue) ||
-                parseInt(inputValue) > 99)
+              (!/^[1-9][0-9]{0,1}$/.test(inputValue) || parseInt(inputValue) > 99)
             ) {
               alert(
                 `Error: ${fieldDisplayNames[fieldName]} must be a whole number between 1 and 99 or 'All'.`,
@@ -495,18 +467,24 @@
 
         // Populate the table rows
         stats.forEach((row, rowIndex) => {
-          tableHTML += "<tr>";
-          // Populate the table cells
-          row.forEach((cell) => {
-            const formattedCell = (cell || "").replace(/\n/g, "<br>");
-            if (rowIndex === 0) {
-              // Check if it's the first row
-              tableHTML += `<td style="font-weight: bold;">${formattedCell}</td>`;
-            } else {
-              tableHTML += `<td>${formattedCell}</td>`;
-            }
-          });
-          tableHTML += "</tr>";
+          // Check if all cells in the row are empty
+          const allCellsEmpty = row.every((cell) => !cell);
+
+          // If not all cells are empty, add the row to the table
+          if (!allCellsEmpty) {
+            tableHTML += "<tr>";
+            // Populate the table cells
+            row.forEach((cell) => {
+              const formattedCell = (cell || "").replace(/\n/g, "<br>");
+              if (rowIndex === 0) {
+                // Check if it's the first row
+                tableHTML += `<td style="font-weight: bold;">${formattedCell}</td>`;
+              } else {
+                tableHTML += `<td>${formattedCell}</td>`;
+              }
+            });
+            tableHTML += "</tr>";
+          }
         });
 
         tableHTML += "</table>";
