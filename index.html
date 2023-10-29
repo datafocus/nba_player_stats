@@ -58,7 +58,7 @@
       label > span {
         display: block;
         margin-top: 15px;
-        margin-bottom: -5px
+        margin-bottom: -5px;
       }
 
       input,
@@ -143,6 +143,32 @@
           font-size: 1rem;
         }
       }
+
+      label {
+        position: relative;
+      }
+
+      .autocomplete-items {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        border: 1px solid #eaeaea;
+        max-height: 150px;
+        overflow-y: auto;
+        z-index: 1;
+        width: 100%;
+        background-color: white;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .autocomplete-items div {
+        padding: 8px 10px;
+        cursor: pointer;
+      }
+
+      .autocomplete-items div:hover {
+        background-color: #f7f7f7;
+      }
     </style>
   </head>
   <body>
@@ -156,13 +182,16 @@
         <label>
           <span style="margin-top: 5px; margin-bottom: -5px">Player Name:</span>
           <input
-            id="playerName"
-            maxlength="60"
-            name="playerName"
-            placeholder="e.g. Nikola Jokic"
-            required=""
             type="text"
-        /></label>
+            name="playerName"
+            id="playerName"
+            placeholder="e.g. Nikola Jokic"
+            required
+            maxlength="60"
+            autocomplete="off"
+          />
+          <div id="autocomplete-list" class="autocomplete-items"></div>
+        </label>
         <label
           ><span>Number of Points:</span>
           <input
@@ -384,6 +413,62 @@
       acc.addEventListener("click", () => {
         // Toggle the display of the panel
         panel.style.display = panel.style.display === "block" ? "none" : "block";
+      });
+
+      // Fetch player names for the autocomplete function
+      let playerNames = [];
+
+      // Fetch the players data from the GitHub URL
+      fetch(
+        "https://raw.githubusercontent.com/swar/nba_api/64208a57c9b5de63afedc6b1e8445fc75d29b061/src/nba_api/stats/library/data.py",
+      )
+        .then((response) => response.text())
+        .then((data) => {
+          // Extract players' lines using regular expressions
+          const playerLines = data.match(/\[\d+,\s".*?",\s".*?",\s".*?",\s(True|False)\]/g);
+
+          // Convert each line to a player array
+          const playersArray = playerLines.map((line) => {
+            const matches = line.match(/\[(\d+),\s"(.*?)",\s"(.*?)",\s"(.*?)",\s(True|False)\]/);
+            return [
+              parseInt(matches[1]),
+              matches[2],
+              matches[3],
+              matches[4],
+              matches[5] === "True",
+            ];
+          });
+
+          // Filter only active players
+          playerNames = playersArray.filter((player) => player[4]).map((player) => player[3]);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch players:", error);
+        });
+
+      // Apply autocomplete to the fetched player names (playerNames)
+      document.getElementById("playerName").addEventListener("input", function (e) {
+        const val = this.value;
+        const listDiv = document.getElementById("autocomplete-list");
+        listDiv.innerHTML = "";
+
+        if (!val) return false;
+
+        const matches = playerNames.filter((player) =>
+          player.toLowerCase().startsWith(val.toLowerCase()),
+        );
+
+        matches.forEach((player) => {
+          const item = document.createElement("div");
+          item.innerHTML = `<strong>${player.substr(0, val.length)}</strong>${player.substr(
+            val.length,
+          )}`;
+          item.addEventListener("click", function () {
+            document.getElementById("playerName").value = player;
+            listDiv.innerHTML = "";
+          });
+          listDiv.appendChild(item);
+        });
       });
 
       // Validate the user input before submission
