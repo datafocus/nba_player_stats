@@ -144,22 +144,21 @@
         }
       }
 
-      #playerName {
+      label {
         position: relative;
       }
 
       .autocomplete-items {
         position: absolute;
-        top: 100%; /* positions the dropdown directly under the input */
-        left: 0; /* aligns to the left of the input */
-        width: auto; /* let the dropdown take as much width as it needs */
+        top: 100%; /* Places the box right below the input */
+        left: 0; /* Aligns the box to the left of the input */
         border: 1px solid #eaeaea;
-        border-radius: 8px;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        background-color: #ffffff;
-        max-height: 200px;
+        max-height: 150px;
         overflow-y: auto;
-        z-index: 1000;
+        z-index: 1;
+        width: 100%;
+        background-color: white;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
       }
 
       .autocomplete-items div {
